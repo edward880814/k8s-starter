@@ -32,14 +32,27 @@ TOKEN_VALUE=$(docker exec -i $ES_CONTAINER sh -c '
 if [ -z "$TOKEN_VALUE" ]; then
     echo "Failed to retrieve the token from Elasticsearch. Exiting."
     exit 1
+else
+    echo "Kibana token retrieved: $TOKEN_VALUE"
 fi
-echo "Kibana token retrieved: $TOKEN_VALUE"
 
-# Step 5: Update docker-compose.yml with the new Kibana token
-echo "Updating docker-compose.yml with the new Kibana token..."
-grep -q "ELASTICSEARCH_SERVICEACCOUNT_TOKEN=" docker-compose.yml && \
-  sed -i "s|ELASTICSEARCH_SERVICEACCOUNT_TOKEN=.*|ELASTICSEARCH_SERVICEACCOUNT_TOKEN=$TOKEN_VALUE|" docker-compose.yml || \
-  echo "Failed to update docker-compose.yml. Exiting."
+# Step 5: Update docker-compose.yaml with the new Kibana token
+echo "Updating docker-compose.yaml with the new Kibana token..."
+if grep -q "ELASTICSEARCH_SERVICEACCOUNT_TOKEN=" docker-compose.yaml; then
+  sed -i "s|ELASTICSEARCH_SERVICEACCOUNT_TOKEN=.*|ELASTICSEARCH_SERVICEACCOUNT_TOKEN=$TOKEN_VALUE|" docker-compose.yaml
+  echo "Updated ELASTICSEARCH_SERVICEACCOUNT_TOKEN in docker-compose.yaml."
+else
+  sed -i "/environment:/a\      - ELASTICSEARCH_SERVICEACCOUNT_TOKEN=$TOKEN_VALUE" docker-compose.yaml
+  echo "Added ELASTICSEARCH_SERVICEACCOUNT_TOKEN to docker-compose.yaml."
+fi
+
+# Validate the update
+if grep -q "ELASTICSEARCH_SERVICEACCOUNT_TOKEN=$TOKEN_VALUE" docker-compose.yaml; then
+  echo "docker-compose.yaml updated successfully."
+else
+  echo "Failed to update docker-compose.yaml with the new Kibana token. Exiting."
+  exit 1
+fi
 
 # Step 6: Start Kibana service
 echo "Starting Kibana..."

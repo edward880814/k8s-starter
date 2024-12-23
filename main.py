@@ -59,15 +59,32 @@ def set_kibana_password_and_generate_token():
 def update_docker_compose_yml(token_value):
     print("Updating docker-compose.yaml with the new Kibana token...")
     try:
+        updated = False
+        new_lines = []
         with open("docker-compose.yaml", "r") as file:
             lines = file.readlines()
+        
+        for line in lines:
+            if "ELASTICSEARCH_SERVICEACCOUNT_TOKEN=" in line:
+                new_lines.append(f"      - ELASTICSEARCH_SERVICEACCOUNT_TOKEN={token_value}\n")
+                updated = True
+            else:
+                new_lines.append(line)
+        
+        if not updated:
+            for idx, line in enumerate(new_lines):
+                if "environment:" in line and "kibana" in "".join(new_lines[max(0, idx - 5):idx]):
+                    new_lines.insert(idx + 1, f"      - ELASTICSEARCH_SERVICEACCOUNT_TOKEN={token_value}\n")
+                    updated = True
+                    break
 
         with open("docker-compose.yaml", "w") as file:
-            for line in lines:
-                if line.startswith("ELASTICSEARCH_SERVICEACCOUNT_TOKEN="):
-                    file.write(f"ELASTICSEARCH_SERVICEACCOUNT_TOKEN={token_value}\n")
-                else:
-                    file.write(line)
+            file.writelines(new_lines)
+        
+        if updated:
+            print("docker-compose.yaml updated successfully.")
+        else:
+            print("Failed to find the Kibana environment block in docker-compose.yaml. No changes made.")
     except Exception as e:
         print(f"Failed to update docker-compose.yaml: {e}")
         exit(1)
