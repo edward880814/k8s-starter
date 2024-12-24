@@ -8,7 +8,7 @@ heartbeat.monitors:
     id: jobber-api-gateway
     name: Jobber API Gateway Service
     schedule: '@every 5s'
-    hosts: ["http://192.168.0.42:4000/gateway-health"]
+    hosts: ["http://gateway_container:4000/gateway-health"]
     check.request.method: GET
     check.response.status: [200]
 
@@ -16,7 +16,7 @@ heartbeat.monitors:
     id: jobber-notification
     name: Jobber Notification Service
     schedule: '@every 5s'
-    hosts: ["http://192.168.0.42:4001/notification-health"]
+    hosts: ["http://notification_container:4001/notification-health"]
     check.request.method: GET
     check.response.status: [200]
 
@@ -24,7 +24,7 @@ heartbeat.monitors:
     id: jobber-auth
     name: Jobber Auth Service
     schedule: '@every 5s'
-    hosts: ["http://192.168.0.42:4002/auth-health"]
+    hosts: ["http://auth_container:4002/auth-health"]
     check.request.method: GET
     check.response.status: [200]
 
@@ -32,7 +32,7 @@ heartbeat.monitors:
     id: jobber-users
     name: Jobber Users Service
     schedule: '@every 5s'
-    hosts: ["http://192.168.0.42:4003/user-health"]
+    hosts: ["http://users_container:4003/user-health"]
     check.request.method: GET
     check.response.status: [200]
 
@@ -40,7 +40,7 @@ heartbeat.monitors:
     id: jobber-gigs
     name: Jobber Gigs Service
     schedule: '@every 5s'
-    hosts: ["http://192.168.0.42:4004/gig-health"]
+    hosts: ["http://gig_container:4004/gig-health"]
     check.request.method: GET
     check.response.status: [200]
 
@@ -48,7 +48,7 @@ heartbeat.monitors:
     id: jobber-chat
     name: Jobber Chat Service
     schedule: '@every 5s'
-    hosts: ["http://192.168.0.42:4005/chat-health"]
+    hosts: ["http://chat_container:4005/chat-health"]
     check.request.method: GET
     check.response.status: [200]
 
@@ -56,7 +56,7 @@ heartbeat.monitors:
     id: jobber-orders
     name: Jobber Orders Service
     schedule: '@every 5s'
-    hosts: ["http://192.168.0.42:4006/order-health"]
+    hosts: ["http://order_container:4006/order-health"]
     check.request.method: GET
     check.response.status: [200]
 
@@ -64,7 +64,7 @@ heartbeat.monitors:
     id: jobber-reviews
     name: Jobber Reviews Service
     schedule: '@every 5s'
-    urls: ["http://192.168.0.42:4007/review-health"]
+    urls: ["http://review_container:4007/review-health"]
     check.request.method: GET
     check.response.status: [200]
 

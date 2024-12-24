@@ -21,7 +21,7 @@ xpack.encryptedSavedObjects.encryptionKey: fhjskloppd678ehkdfdlliverpoolfcr
 ## Add policy for apm-server integration
 xpack.fleet.packages:
   - name: apm
-    version: 8.12.2
+    version: 8.11.0
 xpack.fleet.agentPolicies:
   - name: Agent policy 1
     id: agent-policy-1

@@ -90,7 +90,7 @@ services:
   ## 每次停止elasticsearch跟kibana都要重新創建這個token，然後再加進去kibana的ELASTICSEARCH_SERVICEACCOUNT_TOKEN的env中
   elasticsearch:
     container_name: elasticsearch_container
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
     restart: always
     environment:
       ES_JAVA_OPTS: -Xmx1g -Xms1g
@@ -116,13 +116,13 @@ services:
   
   kibana:
     container_name: kibana_container
-    image: docker.elastic.co/kibana/kibana:8.12.2
+    image: docker.elastic.co/kibana/kibana:8.11.0
     restart: always
     environment:
       - ELASTICSEARCH_HOSTS=["http://elasticsearch_container:9200"]
       - ELASTICSEARCH_USERNAME=kibana_system
       - ELASTICSEARCH_PASSWORD=kibana
-      - ELASTICSEARCH_SERVICEACCOUNT_TOKEN=AAEAAWVsYXN0aWMva2liYW5hL2pvYmJlci1raWJhbmE6OFlTWUF3cWVSWDJFSGtESTZpZmdqQQ
+      - ELASTICSEARCH_SERVICEACCOUNT_TOKEN=AAEAAWVsYXN0aWMva2liYW5hL2pvYmJlci1raWJhbmE6b3dJZXJZOWVULUdhYXB5dkRuWi1GQQ
       - XPACK_FLEET_AGENTS_ELASTICSEARCH_HOSTS=["http://elasticsearch_container:9200"]
     ports:
       - 5601:5601
@@ -135,7 +135,7 @@ services:
 
   ## apmServer, metricbeat, heartbeat 的版本必須要跟elasticsearch, kibana相同
   apmServer:
-    image: docker.elastic.co/apm/apm-server:8.12.2
+    image: docker.elastic.co/apm/apm-server:8.11.0
     container_name: apm_server_container
     ports:
       - 8200:8200
@@ -156,7 +156,7 @@ services:
 
   metricbeat:
     container_name: metricbeat_container
-    image: docker.elastic.co/beats/metricbeat:8.12.2
+    image: docker.elastic.co/beats/metricbeat:8.11.0
     user: root
     ports:
       - 5066:5066
@@ -176,7 +176,7 @@ services:
 
   heartbeat:
     container_name: heartbeat_container
-    image: docker.elastic.co/beats/heartbeat:8.12.2
+    image: docker.elastic.co/beats/heartbeat:8.11.0
     user: root
     hostname: heartbeat
     cap_add:
@@ -199,7 +199,7 @@ services:
       - 4000:4000
     env_file: ../server/1-gateway-service/.env
     environment:
-      - ENABLE_APM=0
+      - ENABLE_APM=1
       - GATEWAY_JWT_TOKEN=1282722b942e08c8a6cb033aa6ce850e
       - JWT_TOKEN=8db8f85991bb28f45ac0107f2a1b349c
       - NODE_ENV=development
@@ -232,7 +232,7 @@ services:
       - 4001:4001
     env_file: ../server/2-notification-service/.env
     environment:
-      - ENABLE_APM=0
+      - ENABLE_APM=1
       - NODE_ENV=development
       - CLIENT_URL=http://localhost:3000
       - RABBITMQ_ENDPOINT=amqp://jobber:jobberpass@rabbitmq_container:5672
@@ -257,7 +257,7 @@ services:
       - 4002:4002
     env_file: ../server/3-auth-service/.env
     environment:
-      - ENABLE_APM=0
+      - ENABLE_APM=1
       - GATEWAY_JWT_TOKEN=1282722b942e08c8a6cb033aa6ce850e
       - JWT_TOKEN=8db8f85991bb28f45ac0107f2a1b349c
       - NODE_ENV=development
@@ -288,7 +288,7 @@ services:
       - 4003:4003
     env_file: ../server/4-users-service/.env
     environment:
-      - ENABLE_APM=0
+      - ENABLE_APM=1
       - DATABASE_URL=mongodb://mongodb_container:27017/jobber-users
       - GATEWAY_JWT_TOKEN=1282722b942e08c8a6cb033aa6ce850e
       - JWT_TOKEN=8db8f85991bb28f45ac0107f2a1b349c
@@ -319,7 +319,7 @@ services:
       - 4004:4004
     env_file: ../server/5-gig-service/.env
     environment:
-      - ENABLE_APM=0
+      - ENABLE_APM=1
       - DATABASE_URL=mongodb://mongodb_container:27017/jobber-gig
       - GATEWAY_JWT_TOKEN=1282722b942e08c8a6cb033aa6ce850e
       - JWT_TOKEN=8db8f85991bb28f45ac0107f2a1b349c
@@ -350,7 +350,7 @@ services:
       - 4005:4005
     env_file: ../server/6-chat-service/.env
     environment:
-      - ENABLE_APM=0
+      - ENABLE_APM=1
       - DATABASE_URL=mongodb://mongodb_container:27017/jobber-chat
       - GATEWAY_JWT_TOKEN=1282722b942e08c8a6cb033aa6ce850e
       - JWT_TOKEN=8db8f85991bb28f45ac0107f2a1b349c
@@ -380,7 +380,7 @@ services:
       - 4006:4006
     env_file: ../server/7-order-service/.env
     environment:
-      - ENABLE_APM=0
+      - ENABLE_APM=1
       - DATABASE_URL=mongodb://mongodb_container:27017/jobber-order
       - GATEWAY_JWT_TOKEN=1282722b942e08c8a6cb033aa6ce850e
       - JWT_TOKEN=8db8f85991bb28f45ac0107f2a1b349c
@@ -412,8 +412,8 @@ services:
       - 4007:4007
     env_file: ../server/8-review-service/.env
     environment:
-      - ENABLE_APM=0
-      - DATABASE_HOST=192.168.2.102
+      - ENABLE_APM=1
+      - DATABASE_HOST=192.168.168.180
       - DATABASE_USER=jobber
       - DATABASE_PASSWORD=api
       - DATABASE_NAME=jobber_reviews
