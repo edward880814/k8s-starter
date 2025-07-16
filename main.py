@@ -1,4 +1,3 @@
-import os
 import subprocess
 import time
 import requests
@@ -33,6 +32,7 @@ def wait_for_elasticsearch():
 def set_kibana_password_and_generate_token():
     es_container = "elasticsearch_container"
     print("Setting Kibana system user password and generating token...")
+
     password_command = (
         "curl -s -X POST -u elastic:admin1234 -H 'Content-Type: application/json' "
         "http://localhost:9200/_security/user/kibana_system/_password -d '{\"password\":\"kibana\"}'"
@@ -84,7 +84,7 @@ def update_docker_compose_yml(token_value):
         if updated:
             print("docker-compose.yaml updated successfully.")
         else:
-            print("Failed to find the Kibana environment block in docker-compose.yaml. No changes made.")
+            print("Failed to find the Kibana environment block. No changes made.")
     except Exception as e:
         print(f"Failed to update docker-compose.yaml: {e}")
         exit(1)
@@ -97,14 +97,34 @@ def start_kibana():
         exit(1)
     print("Kibana service started successfully.")
 
+def start_remaining_services():
+    print("Starting remaining services...")
+    services = [
+        "redis", "redis-commander", "mongodb", "mysql", "postgres", "rabbitmq",
+        "apmServer", "metricbeat", "heartbeat",
+        "gateway", "notifications", "auth", "users", "gig", "chat", "order", "review"
+    ]
+    for service in services:
+        start_service(service)
+
 def main():
+    # 1. 啟動 Elasticsearch 並等待就緒
     start_service("elasticsearch")
     check_service_running("elasticsearch_container")
     wait_for_elasticsearch()
+
+    # 2. 設定 Kibana 密碼、token，更新 docker-compose.yaml
     token_value = set_kibana_password_and_generate_token()
     update_docker_compose_yml(token_value)
+
+    # 3. 啟動 Kibana
     start_kibana()
-    print("Script completed successfully.")
+    check_service_running("kibana_container")
+    time.sleep(10)  # 可視情況調整
+
+    # 4. 啟動其餘服務
+    start_remaining_services()
+    print("✅ All services started successfully.")
 
 if __name__ == "__main__":
     main()

@@ -15,7 +15,7 @@ services:
 
   redis-commander:
     container_name: redis-commander
-    image: ghcr.io/joeferner/redis-commander:0.7.1
+    image: rediscommander/redis-commander:latest
     restart: always
     ports:
       - '8081:8081'
@@ -122,7 +122,7 @@ services:
       - ELASTICSEARCH_HOSTS=["http://elasticsearch_container:9200"]
       - ELASTICSEARCH_USERNAME=kibana_system
       - ELASTICSEARCH_PASSWORD=kibana
-      - ELASTICSEARCH_SERVICEACCOUNT_TOKEN=AAEAAWVsYXN0aWMva2liYW5hL2pvYmJlci1raWJhbmE6b3dJZXJZOWVULUdhYXB5dkRuWi1GQQ
+      - ELASTICSEARCH_SERVICEACCOUNT_TOKEN=AAEAAWVsYXN0aWMva2liYW5hL2pvYmJlci1raWJhbmE6MG0xcVpZd2JULXVGM1ZPV3pQX1B2dw
       - XPACK_FLEET_AGENTS_ELASTICSEARCH_HOSTS=["http://elasticsearch_container:9200"]
     ports:
       - 5601:5601
